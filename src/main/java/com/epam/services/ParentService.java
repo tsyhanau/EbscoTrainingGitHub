@@ -4,7 +4,7 @@ import com.epam.awsHandlers.AwsHandler;
 
 public class ParentService {
 
-    public AwsHandler awsHandler;
+    protected AwsHandler awsHandler;
 
     public ParentService() {
         this.awsHandler = AwsHandler.getAwsHandler();

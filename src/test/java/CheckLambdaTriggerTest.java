@@ -38,7 +38,6 @@ public class CheckLambdaTriggerTest extends BeforeAfterTest {
         String randomFileName = randomFile.getName();
         s3Service.putFileInToBucket(BUCKET_NAME_KEY, randomFile);
         assertTrue(s3Service.isFileWithCurrentNameInBucketExist(BUCKET_NAME_KEY, randomFileName));
-        //System.out.println(AwsHandler.getAwsHandler().findItemInTable(BUCKET_NAME_KEY, TABLE_NAME_KEY, randomFile.getName()));
         assertTrue(dynamoDbService.isItemInTablePresent(BUCKET_NAME_KEY, TABLE_NAME_KEY, randomFileName));
         s3Service.deleteItemFromBucket(BUCKET_NAME_KEY, randomFileName);
         assertFalse(dynamoDbService.isItemInTablePresent(BUCKET_NAME_KEY, TABLE_NAME_KEY, randomFileName));

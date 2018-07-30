@@ -45,10 +45,10 @@ public class AwsHandler {
     private Table table;
     private File file;
     private String bucketName;
-    private String fileName;
-    private String fileType;
-    private String lambdaName;
-    private String tableName;
+    private String  fileName;
+    private String  fileType;
+    private String  lambdaName;
+    private String  tableName;
 
     private AwsHandler() {
     }
@@ -68,7 +68,6 @@ public class AwsHandler {
     ////////////////////////////////// Log in
     public void createProperties(String awsPropertyPath) {
         try {
-
             awsProp.load
                     (new FileInputStream("../EbscoTraining/src/main/resources/aws.properties"));
         } catch (Exception e) {
@@ -83,18 +82,12 @@ public class AwsHandler {
 
     /////////////////////////////////  S3
     public void connectS3() {
-
-        //s3 = new AmazonS3Client(basicAWSCredentials);
-        //s3 = AwsClientBuilder.withClientConfiguration(basicAWSCredentials);
-
         s3 = AmazonS3ClientBuilder.standard().
                 withCredentials(new AWSStaticCredentialsProvider(basicAWSCredentials)).build();
-
     }
 
     public List<Bucket> getBuckets() {
         return s3.listBuckets();
-
     }
 
     public Bucket findBucket(String bucketName) {
@@ -105,38 +98,16 @@ public class AwsHandler {
     }
 
     public boolean isExistBucket(String bucketName) {
-        if (findBucket(bucketName).equals(null)) {
-            return false;
-        }
-        return true;
-    }
-/*    public File findFileInBucket (String bucketNameKey, String fileName) {
-        bucketName = getValueOfKey(bucketNameKey);
-        File file = null;
-        ObjectListing listing = s3.listObjects(bucketName);
-        List<S3ObjectSummary> summaries = listing.getObjectSummaries();
-
-        while (listing.isTruncated()) {
-            listing = s3.listNextBatchOfObjects(listing);
-            summaries.addAll(listing.getObjectSummaries());
-        }
-*//*        for (S3ObjectSummary file : summaries) {
-            System.out.println(file.getKey() + file.getLastModified().getTime() + "\n" );
-        }*//*
-        for (S3ObjectSummary f : summaries) {
-            if (f.getKey().equals(fileName)) {
-                return f.;
-            }
+        for (Bucket bucket : getBuckets()) {
+            if (bucket.getName().equals(bucketName)) return true;
         }
         return false;
-    }*/
+    }
 
     public boolean isFileInBucketPresent(String bucketNameKey, String randomFileName) {
-
-        String bName = awsProp.getProperty(bucketNameKey);
-        ObjectListing listing = s3.listObjects(bName);
+        bucketName = getValueOfKey(bucketNameKey);
+        ObjectListing listing = s3.listObjects(bucketName);
         List<S3ObjectSummary> summaries = listing.getObjectSummaries();
-
         while (listing.isTruncated()) {
             listing = s3.listNextBatchOfObjects(listing);
             summaries.addAll(listing.getObjectSummaries());
@@ -153,7 +124,6 @@ public class AwsHandler {
         bucketName = getValueOfKey(bucketNameKey);
         System.out.format("Bucketname is %s/// file name is %s///", bucketName, fileName);
         s3.deleteObject(bucketName, fileName);
-
     }
     /////////////////////////////////// dynamoBD
 
@@ -172,16 +142,13 @@ public class AwsHandler {
         return tab;
     }
 
-    public boolean isExistTable(String tableName) {
-        for (Table t : dynamoDB.listTables()) {
-            if (t.getTableName().equals(tableName)) return true;
-        }
-        return false;
+    public boolean isExistTable(String tableNameKey) {
+        tableName = getValueOfKey(tableNameKey);
+        return getTable(tableName) != null;
     }
 
     public boolean isItemInTable(String bucketNameKey, String tableNameKey, String randomFileName) {
-        if(findItemInTable(bucketNameKey, tableNameKey, randomFileName) == null){return false;}
-        return true;
+        return findItemInTable(bucketNameKey, tableNameKey, randomFileName) != null;
     }
 
     public Item findItemInTable(String bucketNameKey, String tableNameKey, String randomFileName) {
@@ -190,8 +157,9 @@ public class AwsHandler {
         tableName = getValueOfKey(tableNameKey);
         table = getTable(tableName);
         String filePathAttribute = bucketName + "/" + randomFileName;
+        System.out.println(filePathAttribute);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -209,7 +177,6 @@ public class AwsHandler {
         for (Map<String, AttributeValue> i : result.getItems()) {
             String packageID = i.get("package Id").getS();
             double timeStamp = Double.parseDouble(i.get("originTimeStamp").getN());
-            //int n = (int) timeStamp;
             item = table.getItem("package Id", packageID,
                     "originTimeStamp", timeStamp);
             System.out.format("Item was found <<<%s>>>", item);
@@ -218,9 +185,6 @@ public class AwsHandler {
         return null;
     }
 
-    public void deleteItemFromDB(String bucketNameKey, String tableNameKey, String randomFileName) {
-        Item item = findItemInTable(bucketNameKey,tableNameKey,randomFileName);
-    }
 
 /*    public void createItem() {
         Item item = new Item()
@@ -251,7 +215,6 @@ public class AwsHandler {
         lambdaName = awsProp.getProperty(lambdaNameKey);
         ListFunctionsRequest request = new ListFunctionsRequest();
         ListFunctionsResult response = lambdaClient.listFunctions(request);
-        //System.out.println(response.getFunctions());
         for (FunctionConfiguration fun : response.getFunctions()) {
             if (fun.getFunctionName().equals(lambdaName)) {
                 return true;
@@ -262,18 +225,15 @@ public class AwsHandler {
 
     //////////////////////////////////////////////////////// Files
 
-
     public void putFileInToBucket(String bucketNameKey, File file) {
         bucketName = awsProp.getProperty(bucketNameKey);
         System.out.println("Uploading a new object + <<<" + file + ">>>  in to S3 backet >>>" + bucketName);
-        //String typeOfFile = fileType.fileTypeAsString();
 
         TransferManager transferManager = TransferManagerBuilder.standard().build();
-
         Upload xfer = transferManager.upload(bucketName, file.getName(), file);
         try {
             xfer.waitForCompletion();
-            System.out.println("file " + file.getName() + " was uploaded");
+            System.out.format("file <<<%s>>> was uploaded", file.getName());
         } catch (Exception e) {
             System.out.println("Exeption" + e);
         }
@@ -292,7 +252,4 @@ public class AwsHandler {
             return null;
         }
     }
-
-
-
 }

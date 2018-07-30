@@ -1,7 +1,7 @@
 package com.epam.runners;
 
 
-/*@RunWith(JUnitPlatform.class)
-@SelectClasses({AssertionTest.class, AssumptionTest.class, ExceptionTest.class})*/
+/*@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = { SpringTestConfiguration.class })*/
 public class JunitRunner {
 }
