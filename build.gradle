@@ -1,0 +1,52 @@
+group 'com.epam'
+version '1.0-SNAPSHOT'
+
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4")
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+    }
+}
+
+apply plugin: 'java'
+sourceCompatibility = 1.8
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+dependencies {
+    repositories {
+        mavenCentral()
+    }
+
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0-M4")
+    //testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0-M4")
+
+    // Enable use of the JUnitPlatform Runner within the IDE
+    //testCompile("org.junit.platform:junit-platform-runner:1.0.0-M4")
+
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.2.0'
+
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.0.0'
+
+    compile 'com.amazonaws:aws-java-sdk:1.11.339'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+
+}
+
+junitPlatform {
+    details 'tree'
+}
+
+test {
+    // Enable JUnit 5 (Gradle 4.6+).
+    useJUnitPlatform()
+}
