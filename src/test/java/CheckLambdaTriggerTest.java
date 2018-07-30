@@ -12,8 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CheckLambdaTriggerTest extends BeforeAfterTest {
 
-    S3Service s3Service = new S3Service();
-    DynamoDbService dynamoDbService = new DynamoDbService();
+    private S3Service s3Service = new S3Service();
+    private DynamoDbService dynamoDbService = new DynamoDbService();
 
     @BeforeEach
     public void beforeTests() {
@@ -29,7 +29,6 @@ public class CheckLambdaTriggerTest extends BeforeAfterTest {
         assertTrue(s3Service.isFileWithCurrentNameInBucketExist(BUCKET_NAME_KEY, randomFileName));
         assertTrue(dynamoDbService.isItemInTablePresent(BUCKET_NAME_KEY, TABLE_NAME_KEY, randomFileName));
         s3Service.deleteItemFromBucket(BUCKET_NAME_KEY, randomFileName);
-        //Assertions.assertAll();
     }
 
     @ParameterizedTest
@@ -41,8 +40,6 @@ public class CheckLambdaTriggerTest extends BeforeAfterTest {
         assertTrue(dynamoDbService.isItemInTablePresent(BUCKET_NAME_KEY, TABLE_NAME_KEY, randomFileName));
         s3Service.deleteItemFromBucket(BUCKET_NAME_KEY, randomFileName);
         assertFalse(dynamoDbService.isItemInTablePresent(BUCKET_NAME_KEY, TABLE_NAME_KEY, randomFileName));
-        //dynamoDbService.deleteItemFromTable(BUCKET_NAME_KEY, TABLE_NAME_KEY, randomFileName);
-        //Assertions.assertAll();
     }
 }
 
