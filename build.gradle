@@ -31,7 +31,7 @@ dependencies {
     //testCompile("org.junit.platform:junit-platform-runner:1.0.0-M4")
 
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.2.0'
+    //testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.2.0'
 
     // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.0.0'

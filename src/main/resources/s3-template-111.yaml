@@ -1,0 +1,18 @@
+#stack >>> s3-delivery111
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create s3 bucket and SQS queue for raw
+Resources:
+  bucket1:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3inputstorage-delivery111
+  bucket2:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3reportstorage-delivery111
+  bucket3:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3contentstorage-delivery111
+
+
