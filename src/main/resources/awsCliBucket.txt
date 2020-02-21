@@ -1,0 +1,24 @@
+//list
+aws s3 ls
+//upload txt files
+$ find . -name "*.txt" | xargs -I {} aws s3 cp {} s3://s3inputstorage-delivery111
+//synchronize buckets (copy)
+aws s3 sync s3://s3inputstorage-delivery111  s3://s3reportstorage-delivery111
+//copy all files
+aws s3 cp s3://s3inputstorage-delivery111  s3://s3reportstorage-delivery111  --recursive
+//get list of all files, their amount and Mb
+aws s3 ls --recursive s3://s3reportstorage-delivery111  --summarize
+// download all files to local
+aws s3 cp s3://s3reportstorage-delivery111  . –recursive
+//delete empty bucket
+aws s3api delete-bucket --bucket s3://s3inputstorage-delivery111  --region ca-central-1
+aws s3 rm s3://s3reportstorage-delivery111  --recursive
+// empty and delete bucket
+aws s3 rb  s3://s3reportstorage-delivery111  --force
+//create cloudformation stack from local template
+aws cloudformation create-stack --stack-name s3-template-1 --template-body file://s3-template-111.yaml 
+aws cloudformation deploy --template-file s3-template-111.yaml --stack-name s3-template-1
+aws cloudformation create-stack --stack-name s3-template-2 --template-body file://s3-template-111.yaml
+{
+    "StackId": "arn:aws:cloudformation:us-east-1:872344130825:stack/s3-template-2/88b47ea0-5418-11ea-8251-0e1c7f65113d"
+}
