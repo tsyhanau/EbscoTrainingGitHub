@@ -1,0 +1,22 @@
+#stack >>> s3reportstorage-inventory-111
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create s3 bucket and SQS queue for raw
+Resources:
+  bucketSource: #source bucket
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3inputstorage-delivery111
+      InventoryConfigurations:
+        - Id: InventoryConfiguration
+          Destination:
+            BucketArn: arn:aws:s3:::s3reportstorage-delivery111
+            Format: ORC
+          Enabled: 'true'
+          IncludedObjectVersions: Current
+          ScheduleFrequency: Daily
+    DependsOn: bucketDestination
+  bucketDestination: #destionation bucket
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: s3reportstorage-delivery111
+
