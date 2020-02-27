@@ -14,9 +14,65 @@ Resources:
           Enabled: 'true'
           IncludedObjectVersions: Current
           ScheduleFrequency: Daily
-    DependsOn: bucketDestination
+          OptionalFields: ['Size','LastModifiedDate','ETag','StorageClass','IsMultipartUploaded','ReplicationStatus','EncryptionStatus']
+#    DependsOn: bucketDestination
   bucketDestination: #destionation bucket
     Type: AWS::S3::Bucket
     Properties:
       BucketName: s3reportstorage-delivery111
-
+  SampleBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: "bucketDestination"
+      PolicyDocument:
+#        Version: '2012-10-17'
+        Statement:
+          -
+            Action:
+              - "s3:*"
+            Effect: "Allow"
+            Resource:
+              - "arn:aws:s3:::bucketDestination/*"
+#              Fn::Join:
+#                  - ""
+#                  -
+#                    - "arn:aws:s3:::"
+#                    -
+#                      Ref: "bucketDestination"
+#                    - "/*"
+            Principal: "*"
+#  ''''''
+#SampleBucketPolicy:
+#  Type: AWS::S3::BucketPolicy
+#  Properties:
+#    Bucket:
+#      Ref: "myExampleBucket"
+#    PolicyDocument:
+#      Statement:
+#        - Action:
+#            - "s3:GetObject"
+#          Effect: "Allow"
+#          Resource:
+#            Fn::Join:
+#              - ""
+#              - - "arn:aws:s3:::"
+#                - Ref: "myExampleBucket"
+#                - "/*"
+#          Principal: "*"
+#'''''''''''''''
+#"Type": "AWS::S3::BucketPolicy",
+#"Properties": {
+#  "PolicyDocument": {
+#    "Statement": [
+#    {
+#      "Sid": "Stmt1582635485010",
+#      "Action": "s3:*",
+#      "Effect": "Allow",
+#      "Resource": "arn:aws:s3:::s3reportstorage-delivery222",
+#      "Principal": { "Service": "s3.amazonaws.com"}
+#    }
+#    ]
+#  },
+#  "Bucket": {
+#    "Ref": "InputInventoryReportBucket"

@@ -1,0 +1,68 @@
+{
+  "Resources": {
+    "InputInventoryReportBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "s3reportstorage-delivery222"
+      }
+    },
+    "InputInventoryReportBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Version": "2008-10-17",
+          "Statement": [
+            {
+              "Sid": "Stmt1582635485010",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "s3.amazonaws.com"
+              },
+              "Action": "s3:*",
+              "Resource": "arn:aws:s3:::s3reportstorage-delivery222"
+            },
+            {
+              "Sid": "S3PolicyStmt-DO-NOT-MODIFY-1582704742282",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "s3.amazonaws.com"
+              },
+              "Action": "s3:PutObject",
+              "Resource": "arn:aws:s3:::s3reportstorage-delivery222/*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceAccount": "872344130825",
+                  "s3:x-amz-acl": "bucket-owner-full-control"
+                },
+                "ArnLike": {
+                  "aws:SourceArn": "arn:aws:s3:::s3contentstorage-delivery222"
+                }
+              }
+            }
+          ]
+        },
+        "Bucket": {
+          "Ref": "InputInventoryReportBucket"
+        }
+      }
+    },
+    "InputContentBucketName": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "s3contentstorage-delivery222",
+        "InventoryConfigurations": [{
+          "Destination" : {
+            "BucketArn": "arn:aws:s3:::s3reportstorage-delivery222",
+            "Prefix": "inventory-reports",
+            "Format": "ORC"
+          },
+          "Enabled" : true,
+          "Id" : "report",
+          "IncludedObjectVersions" : "All",
+          "OptionalFields" : ["Size","LastModifiedDate","ETag","StorageClass","IsMultipartUploaded","ReplicationStatus","EncryptionStatus"],
+          "ScheduleFrequency" : "Daily"
+        }]
+      }
+    }
+  }
+}

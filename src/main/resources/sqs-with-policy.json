@@ -1,0 +1,38 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Simple SQS for testing",
+
+  "Resources": {
+
+    "S3EventQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "QueueName": "sqs222"
+      }
+    },
+    "S3EventQueuePolicy" : {
+      "Type" : "AWS::SQS::QueuePolicy",
+      "DependsOn" : [ "S3EventQueue" ],
+      "Properties" : {
+        "PolicyDocument" : {
+          "Id": "SQSPolicy",
+          "Statement": [
+            {
+              "Sid": "SQSEventPolicy",
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": "SQS:*",
+              "Resource": "*",
+              "Condition": {
+                "ArnLike": {
+                  "aws:SourceArn": "arn:aws:s3:::*"
+                }
+              }
+            }
+          ]
+        },
+        "Queues" : [ { "Ref" : "S3EventQueue"} ]
+      }
+    }
+  }
+}
